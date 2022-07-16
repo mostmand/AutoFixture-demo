@@ -7,15 +7,13 @@ public class PeopleService : IPeopleService
 {
     private readonly ILogger<PeopleService> _logger;
     private readonly IPeopleRepository _peopleRepository;
-    private readonly IDateTimeProvider _dateTimeProvider;
 
-    public PeopleService(ILogger<PeopleService> logger, IPeopleRepository peopleRepository, IDateTimeProvider dateTimeProvider)
+    public PeopleService(ILogger<PeopleService> logger, IPeopleRepository peopleRepository)
     {
         _logger = logger;
         _peopleRepository = peopleRepository;
-        _dateTimeProvider = dateTimeProvider;
     }
-    
+
     public Task AddPersonAsync(Person person, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Person with with national ID {NationalId} called {FirstName} {LastName} is going to be added",

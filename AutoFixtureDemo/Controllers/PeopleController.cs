@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AutoFixtureDemo.Controllers;
 
-public class PeopleController : Controller
+[ApiController]
+[Route("[controller]")]
+public class PeopleController : ControllerBase
 {
     private readonly IPeopleService _peopleService;
 
@@ -16,13 +18,20 @@ public class PeopleController : Controller
     [HttpPost]
     public Task AddPersonAsync([FromBody] Person person, CancellationToken cancellationToken)
     {
-        
         return _peopleService.AddPersonAsync(person, cancellationToken);
     }
 
     [HttpGet]
-    public Task<Person> GetPersonAsync(string nationalId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetPersonAsync(string nationalId, CancellationToken cancellationToken)
     {
-        return _peopleService.GetPersonAsync(nationalId, cancellationToken);
+        try
+        {
+            return new OkObjectResult(await _peopleService.GetPersonAsync(nationalId, cancellationToken));
+        }
+        catch (KeyNotFoundException)
+        {
+            return new NotFoundObjectResult($"No person found with ID {nationalId}");
+        }
+
     }
 }
